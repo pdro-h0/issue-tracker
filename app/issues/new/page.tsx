@@ -16,7 +16,7 @@ import { Button, Callout, Text, TextField } from "@radix-ui/themes";
 import { InfoCircledIcon } from "@radix-ui/react-icons";
 
 import { createIssueSchema } from "@/app/validationSchemas";
-import ErrorMessage from "@/components/errorMessage";
+import ErrorMessage from "@/components/ErrorMessage";
 import Spinner from "@/components/Spinner";
 
 type IssueForm = z.infer<typeof createIssueSchema>;
@@ -32,23 +32,23 @@ const NewIssuePage = () => {
   } = useForm<IssueForm>({
     resolver: zodResolver(createIssueSchema),
   });
+
   const router = useRouter();
+
+  const onSubmit = handleSubmit(async (data) => {
+    try {
+      setIsSubmitimg(true);
+      await axios.post("/api/issues", data);
+      router.push("/issues");
+    } catch (error) {
+      setIsSubmitimg(false);
+      setError("An unexpected error occurred.");
+    }
+  });
 
   return (
     <div className="max-w-xl">
-      <form
-        className=" space-y-3"
-        onSubmit={handleSubmit(async (data) => {
-          try {
-            setIsSubmitimg(true);
-            await axios.post("/api/issues", data);
-            router.push("/issues");
-          } catch (error) {
-            setIsSubmitimg(false);
-            setError("An unexpected error occurred.");
-          }
-        })}
-      >
+      <form className=" space-y-3" onSubmit={onSubmit}>
         <TextField.Root>
           <TextField.Input placeholder="Title" {...register("title")} />
         </TextField.Root>
