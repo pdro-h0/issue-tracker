@@ -1,8 +1,11 @@
 import "@radix-ui/themes/styles.css";
 
-import "./theme-config.css"
+import { ThemeProvider } from "@/components/theme-provider";
+
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
+
+import "./theme-config.css";
 import "./globals.css";
 
 import { Theme } from "@radix-ui/themes";
@@ -28,10 +31,12 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={inter.variable}>
-        <Theme appearance="dark" accentColor="violet" radius="large">
-          <Navbar />
-          <main className="p-5">{children}</main>
-        </Theme>
+        <ThemeProvider attribute="class">
+          <Theme accentColor="violet" radius="large">
+            <Navbar />
+            <main className="p-5">{children}</main>
+          </Theme>
+        </ThemeProvider>
       </body>
     </html>
   );

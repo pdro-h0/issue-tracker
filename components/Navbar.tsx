@@ -3,6 +3,9 @@
 import React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import ToggleDemo from "./Toogle-theme";
+
+import { FaceIcon } from "@radix-ui/react-icons"
 
 const links = [
   { label: "Dashboard", href: "/" },
@@ -14,7 +17,7 @@ const Navbar = () => {
 
   return (
     <nav className="flex space-x-6 border-b mb-5 px-5 h-14 items-center">
-      <Link href="/">LOGO</Link>
+      <Link href="/"><FaceIcon width={30} height={30} /></Link>
 
       <ul className="flex space-x-6">
         {links.map((link) => (
@@ -32,6 +35,7 @@ const Navbar = () => {
           </li>
         ))}
       </ul>
+      <ToggleDemo />
     </nav>
   );
 };
