@@ -16,11 +16,14 @@ import { Button, Callout, Text, TextField } from "@radix-ui/themes";
 import { InfoCircledIcon } from "@radix-ui/react-icons";
 
 import { createIssueSchema } from "@/app/validationSchemas";
+import ErrorMessage from "@/components/errorMessage";
+import Spinner from "@/components/Spinner";
 
 type IssueForm = z.infer<typeof createIssueSchema>;
 
 const NewIssuePage = () => {
   const [error, setError] = useState<string>("");
+  const [isSubmiting, setIsSubmitimg] = useState<boolean>(false);
   const {
     register,
     control,
@@ -37,24 +40,19 @@ const NewIssuePage = () => {
         className=" space-y-3"
         onSubmit={handleSubmit(async (data) => {
           try {
+            setIsSubmitimg(true);
             await axios.post("/api/issues", data);
             router.push("/issues");
           } catch (error) {
+            setIsSubmitimg(false);
             setError("An unexpected error occurred.");
           }
         })}
       >
         <TextField.Root>
-          <TextField.Input
-            placeholder="Title"
-            {...register("title")}
-          />
+          <TextField.Input placeholder="Title" {...register("title")} />
         </TextField.Root>
-        {errors.title && (
-          <Text color="red" as="p">
-            {errors.title.message}
-          </Text>
-        )}
+        {errors.title && <ErrorMessage>{errors.title.message}</ErrorMessage>}
         <Controller
           name="description"
           control={control}
@@ -63,11 +61,11 @@ const NewIssuePage = () => {
           )}
         />
         {errors.description && (
-          <Text color="red" as="p">
-            {errors.description.message}
-          </Text>
+          <ErrorMessage>{errors.description.message}</ErrorMessage>
         )}
-        <Button>Submit New Issue</Button>
+        <Button disabled={isSubmiting}>
+          Submit New Issue {isSubmiting && <Spinner />}
+        </Button>
       </form>
 
       {error && (
